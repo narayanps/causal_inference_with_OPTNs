@@ -1,22 +1,27 @@
 %TRULY MULTIVARIATE ENTROPY
 
 function [C, A] = estim_multivar_entropy(data, tau, emb_params, ParamSurro, tol_c, tol_h)
-
+data = directed_chain(5000);
 M=size(data,1); %num of channels
 T=size(data,2); %num of time-points
-
-%construct transition networks from symbolic dynamics
-[trans_network] = make_optn(data, emb_dim, emb_tau);
-
-%construct matrix of conditional entropies for each delay t - H(i,j,t),
-%where H(i,j,t) -> H(i|j) at t
 num_surr=19;
 ParamSurro.MaxIter=120;
 ParamSurro.type=1;
 delays=0:2;
-emb_dim=3;
+emb_dim=5;
 emb_tau=100;
-[H] = make_cond_ent_matrix(M, data, trans_network, delays, emb_dim, emb_tau, ParamSurro, num_surr);
+H_max = -1*log2(1/factorial(emb_dim));
+
+%construct transition networks from symbolic dynamics
+[trans_network] = make_optn(data, emb_dim, emb_tau);
+
+%construct transition networks from surrogates
+[trans_network_surr] = make_tn_surr(M, data, num_surr, ParamSurro, emb_dim, emb_tau);
+
+%construct matrix of conditional entropies for each delay t - H(i,j,t),
+%where H(i,j,t) -> H(i|j) at t
+
+[H] = make_cond_ent_matrix(M, trans_network, trans_network_surr, delays, num_surr);
 
 
 

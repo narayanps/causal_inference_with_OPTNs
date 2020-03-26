@@ -1,4 +1,4 @@
-function [H] = make_cond_ent_matrix(M, data, trans_network, delays, emb_dim, emb_tau, ParamSurro, num_surr)
+function [H] = make_cond_ent_matrix(M, trans_network, trans_network_surr, delays, num_surr)
 
 %initialize
 H = zeros(M,M,length(delays));
@@ -19,4 +19,17 @@ for i=1:1:M
         end
     end
 end
-Hs
+% Hs_mean = squeeze(mean(Hs, 4));
+% Hs_sigma = squeeze(std(Hs, [], 4));
+% Z = abs(H - Hs_mean)./Hs_sigma;
+% Z(Z<2.58) = 0;
+% Z(Z>2.58) = 1;
+% for i=1:1:M
+%     for j=1:1:M
+%         if i~=j
+%             H(i,j,:) = H(i,j,:) .* Z(i,j,:);
+%         end
+%     end
+% end
+Hs_min=min(Hs,[],4);
+H(H > Hs_min) = 0; 
