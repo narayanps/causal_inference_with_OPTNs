@@ -1,7 +1,7 @@
 %TRULY MULTIVARIATE ENTROPY
 
 function [C, A] = estim_multivar_entropy(data, tau, emb_params, ParamSurro, tol_c, tol_h)
-data = directed_chain_1(1000);
+data = directed_chain_1(5000);
 M=size(data,1); %num of channels
 T=size(data,2); %num of time-points
 num_surr=99;
