@@ -1,4 +1,4 @@
-function [C,H]  = remove_ncn(C, H, trans_network)
+function [H]  = remove_ncn(C, H, trans_network)
 
 M=length(C);
 for i=1:1:M
@@ -27,16 +27,17 @@ for i=1:1:M
                 %end
                 
             end
-        end
-        max_delta=max(delta);
-        ind=find(delta==max_delta);
-        id_n = setdiff(1:length(delta), ind);
-        for j=1:1:length(id_n)
-            if delta(id_n(j)) < 3*max_delta
-                H(i, C{i}.neighbors(id_n(j)), 1+C{i}.tau(id_n(j))) = 0;
+            max_delta=max(delta);
+            ind=find(delta==max_delta);
+            id_n = setdiff(1:length(delta), ind);
+            for j=1:1:length(id_n)
+                if delta(id_n(j)) < 3*max_delta
+                    H(i, C{i}.neighbors(id_n(j)), 1+C{i}.tau(id_n(j))) = 0;
+                end
             end
+            delta=[];
         end
-        delta=[];
+        
     end
 end
 
