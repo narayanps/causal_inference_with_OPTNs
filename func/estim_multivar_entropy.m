@@ -1,15 +1,15 @@
 %TRULY MULTIVARIATE ENTROPY
 
 function [C, A] = estim_multivar_entropy(data, tau, emb_params, ParamSurro, tol_c, tol_h)
-data = directed_chain(10000);
+data = directed_chain_1(10000);
 M=size(data,1); %num of channels
 T=size(data,2); %num of time-points
-num_surr=19;
+num_surr=39;
 ParamSurro.MaxIter=120;
 ParamSurro.type=1;
 delays=0:2;
-emb_dim=5;
-emb_tau=100;
+emb_dim=3;
+emb_tau=10;
 H_max = -1*log2(1/factorial(emb_dim));
 
 %construct transition networks from symbolic dynamics
@@ -23,9 +23,9 @@ H_max = -1*log2(1/factorial(emb_dim));
 
 [H] = make_cond_ent_matrix(M, trans_network, trans_network_surr, delays, num_surr);
 
-[C]  = find_conn_and_delays(H);
+[C]  = find_conn_and_delays(H, delays);
 
-[H]  = remove_ncn(C, trans_network, trans_network_surr,delays,num_surr);
+[C]  = remove_ncn(C, trans_network, trans_network_surr,delays,num_surr);
 
 
 
