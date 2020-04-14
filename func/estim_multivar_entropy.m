@@ -1,23 +1,23 @@
 %TRULY MULTIVARIATE ENTROPY
 
 function [C, A] = estim_multivar_entropy(data, tau, emb_params, ParamSurro, tol_c, tol_h)
-data = directed_chain_1(5000);
+data = model7(10000);
 M=size(data,1); %num of channels
 T=size(data,2); %num of time-points
-num_surr=99;
+num_surr=19;
 ParamSurro.MaxIter=120;
 ParamSurro.type=1;
-delays=0:2;
+delays=0:5;
 emb_dim=3;
-emb_tau=10;
+emb_tau=100;
 H_max = -1*log2(1/factorial(emb_dim));
 
 %construct transition networks from symbolic dynamics
 [trans_network] = make_optn(data, emb_dim, emb_tau);
 
 %construct transition networks from surrogates
-%[trans_network_surr] = make_tn_surr(M, data, num_surr, ParamSurro, emb_dim, emb_tau);
-[trans_network_surr] = make_tn_surr_mv( data, num_surr, ParamSurro, emb_dim, emb_tau);
+[trans_network_surr, chan_comb] = make_tn_surr(M, data, num_surr, ParamSurro, emb_dim, emb_tau, 1000);
+%[trans_network_surr] = make_tn_surr_mv( data, num_surr, ParamSurro, emb_dim, emb_tau);
 
 %construct matrix of conditional entropies for each delay t - H(i,j,t),
 %where H(i,j,t) -> H(i|j) at t
@@ -26,7 +26,7 @@ H_max = -1*log2(1/factorial(emb_dim));
 
 [C]  = find_conn_and_delays(H, delays);
 
-[H]  = remove_ncn(C, H, trans_network);
+[H]  = remove_ncn_v2(C, H, trans_network,data);
 
 
 
