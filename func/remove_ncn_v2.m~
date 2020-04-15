@@ -20,10 +20,10 @@ for i=1:1:M
                 end
                 delta(j) =  abs(ConditionalEntropy(trans_network(1+tau:end,i), [Y_prime']) - ConditionalEntropy(trans_network(1+tau:end,i), [Y']));
             
-                [ts_surr] = shuffle_surr(data(K(j),:), 19);
-                for ns=1:1:19
+                [ts_surr] = shuffle_surr(data(K(j),:), 1);
+                for ns=1:1:1
                     data_surr = [data(i,:); ts_surr(ns,:)];
-                    [trans_network_surr(:,:,1, ns)] = make_optn(data_surr, 3, 100);
+                    [trans_network_surr(:,:,1, ns)] = make_optn(data_surr, 5, 100);
                     Y_=squeeze(trans_network_surr(1+(tau-C{i}.tau(j)):end-(C{i}.tau(j)),2, 1, ns))';
                     delta_s(ns) = abs(ConditionalEntropy(trans_network(1+tau:end,i), [Y_prime']) - ConditionalEntropy(trans_network(1+tau:end,i), [Y_prime' Y_']) );
                 end

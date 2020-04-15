@@ -1,13 +1,13 @@
 %TRULY MULTIVARIATE ENTROPY
 
 function [C, A] = estim_multivar_entropy(data, tau, emb_params, ParamSurro, tol_c, tol_h)
-data = model7(10000);
+data = four_chan_NL(10^4);
 M=size(data,1); %num of channels
 T=size(data,2); %num of time-points
 num_surr=19;
 ParamSurro.MaxIter=120;
 ParamSurro.type=1;
-delays=0:5;
+delays=0:10;
 emb_dim=3;
 emb_tau=100;
 H_max = -1*log2(1/factorial(emb_dim));
@@ -22,11 +22,11 @@ H_max = -1*log2(1/factorial(emb_dim));
 %construct matrix of conditional entropies for each delay t - H(i,j,t),
 %where H(i,j,t) -> H(i|j) at t
 
-[H] = make_cond_ent_matrix(M, trans_network, trans_network_surr, delays, num_surr);
+[H] = make_cond_ent_matrix(M, trans_network, [], delays, num_surr);
 
 [C]  = find_conn_and_delays(H, delays);
 
-[H]  = remove_ncn_v2(C, H, trans_network,data);
+[H1]  = remove_ncn_v2(C, H, trans_network,data);
 
 
 

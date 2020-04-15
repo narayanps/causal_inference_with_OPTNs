@@ -11,13 +11,11 @@ for i=1:1:M
         count = count + 1;
         for t=1:1:length(delays)
             H(i, K(j), t)= entropy(trans_network(delays(t)+1:end,i)', trans_network(1:end-delays(t),K(j))');
-            for  ns=1:num_surr
-                S_1 = squeeze(trans_network_surr(delays(t)+1:end,1,count, ns));
-                S_2 = squeeze(trans_network_surr(1:end-delays(t),2,count, ns));
-%                 S_1 = squeeze(trans_network_surr(delays(t)+1:end,i, ns));
-%                 S_2 = squeeze(trans_network_surr(1:end-delays(t),K(j), ns));
-                Hs(i, K(j), t, ns)= entropy(S_1', S_2');
-            end
+%             for  ns=1:num_surr
+%                 S_1 = squeeze(trans_network_surr(delays(t)+1:end,1,count, ns));
+%                 S_2 = squeeze(trans_network_surr(1:end-delays(t),2,count, ns));
+%                 Hs(i, K(j), t, ns)= entropy(S_1', S_2');
+%             end
         end
     end
 end
@@ -33,5 +31,7 @@ end
 %         end
 %     end
 % end
-Hs_min=min(Hs,[],4);
-H(H > Hs_min) = 0; 
+
+
+% Hs_min=min(Hs,[],4);
+% H(H > Hs_min) = 0; 
