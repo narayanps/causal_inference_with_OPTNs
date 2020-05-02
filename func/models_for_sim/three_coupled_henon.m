@@ -1,5 +1,5 @@
 function X = three_coupled_henon(N)
-c=0.5;
+c=0.2;
 N_ignore=10000;
 x_1(1:2) = randn(2,1);
 x_2(1:2) = randn(2,1);
