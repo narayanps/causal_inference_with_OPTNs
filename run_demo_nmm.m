@@ -1,5 +1,5 @@
 %The demo code estimates causal network for data simulated by network of
-%neural mass models
+%neural mass models (8 ROIS)
 close all
 path=pwd;
 addpath(genpath(strcat(path, '/func/')));
