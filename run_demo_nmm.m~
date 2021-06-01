@@ -1,0 +1,81 @@
+%The demo code estimates causal network for data simulated by network of
+%neural mass models
+close all
+path=pwd;
+addpath(genpath(strcat(path, '/func/')));
+addpath(strcat(path, '/external/'));
+
+n_rois = 8;
+density = 0.05; % 10 percent connection density
+snr = 3;
+lambda = 0.99 ; %[0.95 0.96 0.97 0.98 0.99 1.0] ;
+th = 0.05;
+delay = 30/1000; %30 ms delay in interaction -- introduces ~3-to-4 samples delay @ 100 Hz Fs.
+[eeg1, W_p] = NMM_data_Generation(n_rois, density, delay); %Generate EEG at 100 Hz
+for n=1:1:n_rois
+    sig_var(n) = var(eeg1(n,:),[],2);
+end
+avg_var = mean(sig_var);
+C=(avg_var/snr).*eye(n_rois);
+noise = chol(C) * randn(size(eeg1));
+y = eeg1 + noise;
+
+ent_params.dim = 3;
+ent_params.tau=1;
+ent_params.th=th;
+ent_params.max_var = 2;
+ent_params.lambda = lambda;
+ent_params.min_delay = 1;
+ent_params.delays = 1:10;
+ent_params.true = W_p;
+[H_mvar, ~] = run_multivar_entropy(y, ent_params);  
+H_mvar(H_mvar==0) = log2(factorial(ent_params.dim));
+
+
+plot_interaction_delays(y, ent_params, max_delay)
+count = 0;
+figure
+width = 14;     % Width in inches
+height = 7;    % Height in inches
+alw = 1.5;    % AxesLineWidth
+fs = 20;      % Fontsize
+lw = 2.5;      % LineWidth
+set(0,'defaultTextInterpreter','latex'); %trying to set the default
+figure
+pos = get(gcf, 'Position');
+set(gcf, 'Position', [pos(1) pos(2) width*300, height*300]); %<- Set size
+set(gca, 'FontSize', fs, 'LineWidth', alw); %<- Set properties
+C=linspecer(length(find(H_mvar<log2(factorial(ent_params.dim)))));
+delays = -max_delay:max_delay;
+for i=1:1:size(y,1)
+    for j=i+1:1:size(y,1)
+        if length(find(H_mvar(i,j,:)<log2(factorial(ent_params.dim))))>0
+            count = count +1;
+            plot(delays, [log2(factorial(ent_params.dim))*ones(11,1); squeeze(H_mvar(i,j,:))], 'color', C(count,:), 'LineWidth',lw)
+            legend_str{count,1} = sprintf('%d -> %d', j, i);
+            hold on
+        end
+        if length(find(H_mvar(j,i,:)<log2(factorial(ent_params.dim))))>0
+            count = count +1
+            legend_str{count,1} = sprintf('%d -> %d', j, i);
+            plot(delays, [flip(squeeze(H_mvar(j,i,:))) ; log2(factorial(ent_params.dim))*ones(11,1)], 'color', C(count,:), 'LineWidth',lw)
+            hold on
+        end
+        
+        
+    end
+end
+legend(legend_str)
+ylabel('\textbf{M-OPTN based CE} ($\mathbf{H}$)')
+xlabel ('\textbf{Delays}')
+set(gca, 'XTick', delays);
+set(gca,'TickLabelInterpreter','none');
+set(gca,'fontweight','bold','fontsize',fs);
+set(gcf,'InvertHardcopy','on');
+set(gcf,'PaperUnits', 'inches');
+papersize = get(gcf, 'PaperSize');
+left = (papersize(1)- width)/2;
+bottom = (papersize(2)- height)/2;
+myfiguresize = [left, bottom, width, height];
+set(gcf,'PaperPosition', myfiguresize);
+

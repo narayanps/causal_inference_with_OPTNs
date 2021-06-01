@@ -1,4 +1,6 @@
 function [trans_network] = make_optn(data, dim, tau)
+%AUTHOR : NARAYAN P SUBRAMANIYAM
+%TUNI / MET / 2020
 
 M=size(data,1);  %no. of channels
 T=size(data,2); %no of time points

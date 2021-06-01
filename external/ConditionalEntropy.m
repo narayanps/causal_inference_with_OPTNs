@@ -23,7 +23,7 @@
 function H = ConditionalEntropy(Y,X)
 
 % Axiom of information theory
-H = Entropy(Y) - MutualInformation(X,Y);
+H = ShannonEntropy(Y) - MutualInformation(X,Y);
 
 
 % God bless Claude Shannon.

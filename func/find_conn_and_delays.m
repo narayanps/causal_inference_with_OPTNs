@@ -1,4 +1,4 @@
-function [C]  = find_conn_and_delays(H, delays)
+function [C, H]  = find_conn_and_delays(H, delays, min_delay)
 
 M=size(H,1);
 T=size(H,3);
@@ -19,5 +19,11 @@ for i=1:1:M
         end
     end
 end
+% this functions further prunes away neighbors that could be present at
+% consecutive delays due to strong interaction else this could affect
+% consitioning in remove_ncn step!
+
+H(H==0) = 2.58;
+ [C, H] = remove_false_neighours(C,H, min_delay);
 end
 
