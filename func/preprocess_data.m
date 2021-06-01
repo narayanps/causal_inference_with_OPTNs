@@ -1,5 +1,11 @@
 function [win_data, win_index, data_res] = preprocess_data(data, Fs, Fbp, win_len, win_step, Fs_new)
 
+%STEP I - re-referencing
+%re-referencing introduces some common artifacts, so leaving commented
+% avg_val = mean(data,1);              % Average over electrodes.
+% for i=1:size(data,2)                 % For each time,
+%     data(:,i) = data(:,i) - avg_val(i); % ... subtract the average reference.
+% end
 
 
 % Bandpass filter (EX : 0.5-2000 Hz)
